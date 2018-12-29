@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>canvas-demo</title>
+	<style>
+		
+		html,
+		body{
+			padding:0;
+			margin: 0;	
+		}
+	</style>
+</head>
+<body>
+	<h1>canvas</h1>
+	<!-- 默认是300X150 -->
+	<canvas id="drawing" width="500" height="500"></canvas>
+
+	<script>
+		let draw = document.getElementById("drawing");
+		// 需要先判断是否具有getContext方法,确定浏览器支持<canvas>元素
+		if(draw.getContext){
+			let context = draw.getContext("2d");
+			// 2D上下文
+			// 填充和描边
+			// context.fillStyle = "#ff0000";//控制填充
+			// context.fillRect(10,10,70,70);//绘制矩形，左上角为（0，0），参数依次为，距左距右长和宽；
+			// 绘制第二个
+			// context.fillStyle = "rgba(0,0,255,0.5)";//控制填充
+			// context.fillRect(20,20,20,20);//
+			//描边
+			// context.strokeStyle = "00ff00";
+			// context.strokeRect(0,0,90,90);
+			//清除
+			// context.clearRect();
+			console.log(context.strokeRect);
+			//绘制路径--钟表
+			context.beginPath();//开始路径
+
+			context.arc(100,100,99,0,2*Math.PI,false);//外圆
+
+			context.moveTo(194,100);
+			context.arc(100,100,94,0,2*Math.PI,false);//内圆
+
+			context.translate(100,100);//变换原点
+			// context.rotate(1);//旋转图形
+
+			context.moveTo(0,0);//路径起始点
+			context.lineTo(0,-80);//分针
+
+			context.moveTo(0,0);//时针
+			context.lineTo(-65,0);
+			context.stroke();//绘制	
+
+			// 绘制文本
+			context.font = "bold 14px Arial";
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			context.fillText("12",0,-86);
+
+			// 绘制文本的measureText()方法
+			// let fontSize = 100;
+			// context.font = fontSize + "px Arial";
+
+			// while(context.measureText("Hello,ycx").width>140) {
+			// 	fontSize--;
+			// 	context.font = fontSize + "px Arial";
+			// }
+
+			// context.textBaseline = "bottom";
+			// context.fillText("Hello,ycx",20,fontSize);
+			// context.fillText("Font size is"+fontSize+"px",10,80);
+			// console.log(context);
+			context.translate(100,-100);
+
+			// 设置阴影
+			context.shadowOffsetX = 5;
+			context.shadowOffsetY = 5;
+			context.shadowBlur = 4;
+			context.shadowColor = "rgba(0,0,0,0.5)";
+
+			// 绘制红色矩形
+			context.fillStyle = "#f00";
+			context.fillRect(10,10,50,50);
+
+			// 设置全局透明度
+			context.globalAlpha = 0.5;
+			// 渐变
+			function createRectLinearGradient(context,x,y,width,height){
+				return context.createLinearGradient(x,y,x+width,y+height);
+			}
+			let gradient = createRectLinearGradient(context,30,30,50,50);
+			gradient.addColorStop(0,"white");
+			gradient.addColorStop(1,"black");
+			// // 绘制蓝色矩形
+			context.fillStyle = gradient;
+			context.fillRect(30,30,80,80);
+			context.globalAlpha = 0;
+
+
+			context.translate(0,100);
+		}
+
+	</script>
+</body>
+</html>
