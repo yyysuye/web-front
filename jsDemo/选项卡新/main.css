@@ -1,0 +1,71 @@
+/*全局设置*/
+*{
+	margin: 0;
+	padding: 0;
+}
+body{
+	font-size: small;
+}
+/*包裹层*/
+.wrap{
+	background-color: rgb(7,177,166);
+}
+/*内容区域居中*/
+nav,section{
+	max-width:1080px;
+	margin-left: auto;
+	margin-right: auto;
+}
+/*取消列表默认排序*/
+ul{
+	list-style: none;
+	color: white;
+	padding-left: 150px;
+}
+/*设置为横向排列*/
+ul li{
+	display: inline-block;
+	font-family: "Microsoft YaHei";
+	font-size: 110%;
+	padding:1.3rem 3rem;
+	/*cursor: pointer;*/
+}
+/*取消a链接默认样式*/
+a{
+	text-decoration: none;
+	color:white;
+}
+/*鼠标悬浮显示*/
+ul li:hover{
+	background-color:rgba(23,251,289,0.3);
+}
+/*被选中时高亮显示*/
+.active{
+	background-color:rgba(23,251,289,0.3);
+}
+/*logo*/
+nav p{
+	width: 59px;
+	height:59px;
+	float:left;
+	color:#fff;
+}
+/*内容区域设置高度值*/
+#con1{
+	height:500px;
+}
+#con2{
+	height:500px;
+}
+#con3{
+	height:500px;
+}
+#con4{
+	height:500px;
+}
+#con5{
+	height:500px;
+}
+#con6{
+	height:500px;
+}
