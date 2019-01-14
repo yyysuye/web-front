@@ -581,6 +581,20 @@ Object.defineProperty(Object.prototype,"extend",//定义Object.prototype.extend
 
 
 
+/*
+数组
+*/
+
+//多维数组
+var table=new Array(10);
+for(var i=0;i<table.length;i++){
+	table[i]=new Array(10);
+}
+for(var row=0;row<table.length;row++){
+	for(var col=0;col<table[row].length;col++){
+		table[row][col]=row*col;
+	}
+}
 
 
 
