@@ -596,5 +596,188 @@ for(var row=0;row<table.length;row++){
 	}
 }
 
+/*
+函数
+*/
+//函数定义
+
+//输出对象o的每个属性和值，返回undefinrd
+function printprops(o){
+	for(var p in o){
+		console.log(p+":"+o[p]);
+	}
+}
+
+printprops({x:1,y:2,z:3});
+
+//计算两个笛卡儿积之间的距离
+function distance(o1,o2){
+	var dis=Math.sqrt(o1.x*o2.x+o1.y*o2.y)
+	console.log(dis.toFixed(2));
+}
+distance({x:3,y:5},{x:6,y:7});
+
+//作为值的函数
+//将函数用作值
+function add(x,y){return x+y;}
+function subtract(x,y){return x-y;}
+function multiply(x,y){return x*y;}
+function divide(x,y){return x/y;}
+
+function operate(operator,operand1,operand2){//第一个参数以上面的某个函数为参数
+	return operator(operand1+operand2);
+}
+
+var i = operate(add,operate(add,2,3),operate(multiply,4,5));
+
+var operators = {//实现函数直接量，直接量定义在一个对象直接量中
+	add:function(x,y){return x+y;},
+	subtract:function(x,y){return x-y;},
+	multiply:function(x,y){return x*y;},
+	divide:function(x,y){return x/y;},
+	pow:Math.pow//使用预定义的函数
+};
+//接收一个名字作为运算符，在对象中查找这个运算符
+//然后将它作用于所提供的操作数
+function operate2(operation,operand1,operand2){
+	if(typeof operators[operation]==="function")
+		return operators[operation](operand1,operand2);
+	else throw"unknown operator";
+}
+
+//作为命名空间的函数
+
+//定义一个扩展函数，用来将第二个以及后续参数复制至第一个参数
+//这里我们处理了IE bug：在多数IE版本中
+//如果o的属性拥有一个不可枚举的同名属性，则for/in循环
+//不会枚举对象o的可枚举属性，也就是说，将不会正确地处理诸如toString的属性
+//除非我们显式检测它
+var extend=(function(){//将这个函数的返回值赋值给extend
+//在修复它之前，首先检查是否存在bug
+	for(var p in{toString:null}){//如果代码执行到这里，那么for/in循环会正确工作并返回
+	//一个简单版本的extend()函数
+		return function extend(o){
+			for(var i=1;i<arguments.length;i++){
+				var source=arguments[i];
+				for(var prop in source)o[prop]=source[prop];
+			}
+			return o;
+		};
+	}
+	//如果代码执行到这里，说明for/in循环不会枚举测试对象的toString属性
+	//因此返回另一个版本的extend()函数，这个函数显式测试
+	//Object.prototype中的不可枚举属性
+	return function patched_extend(o){
+		for(var i=1;i<arguments.length;i++){
+			var source=arguments[i];//复制所有的可枚举属性
+			for(var prop in source)o[prop]=source[prop];//现在检查特殊属性
+			for(var j=0;j<protoprops.length;j++){
+				prop=protoprops[j];
+				if(source.hasOwnProperty(prop))o[prop]=source[prop];
+			}
+		}
+		return o;
+	};//这个列表列出了需要检查的特殊属性
+	var protoprops=["toString","valueOf","constructor","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","toLocaleString"];
+}());
 
 
+//闭包
+//这个函数给对象o增加了属性存取器方法
+//方法名称为set<name>和get<name>，如果提供了一个判定函数
+//setter方法就会判定参数的合法性，再存储
+//如果判定函数返回false，就会抛出一个异常
+//
+//所操作的属性值并没有存储在对象o中
+//这个值仅仅是保存在函数的局部变量中
+//getter和setter也是局部函数，所以可以访问这个局部变量
+//对于这两个存取器方法来说这个变量是私有的
+//没有办法绕过存取器方法设置或修改这个值
+function addPrivateProperty(o,name,predicate){
+	var value;//属性值
+	o["get"+name]=function(){return value;};//返回
+	o["set"+name]=function(v){//先判断是否合法，参数3为判断函数
+		if(predicate&&!predicate(v))
+			throw Error("set"+name+":invalid value "+v);
+		else
+			value=v;//存储
+	};
+}
+o={};//空对象
+addPrivateProperty(o,"Name",function(x){return typeof x=="string";});//增加属性存取器方法getName()和setName(),确保只允许字符串值
+o.setName("Frank");//设置属性值
+console.log(o.getName());//得到属性值
+o.setName(0);//设置一个错误的值
+
+//函数方法
+//bind方法
+//es3版本的Function.bind()方法
+if(!Function.prototype.bind){
+	Function.prototype.bind=function(o/*,args*/){//将this和arguments的值保存至变量中
+	//以便在后面嵌套的函数中可以使用它们
+	var self=this,boundArgs=arguments;//bind()方法的返回值是一个函数
+	return function(){//创建一个实参列表，将传入bind()的第二个及后续的实参都传入这个函数
+		var args=[],i;
+		for(i=1;i＜boundArgs.length;i++)args.push(boundArgs[i]);
+		for(i=0;i＜arguments.length;i++)args.push(arguments[i]);//现在将self作为o的方法来调用，传入这些实参
+			return self.apply(o,args);
+		};
+	};
+}
+
+/*
+类和模块
+*/
+//类和原型
+//9-1
+//range.js:实现一个能表示值的范围的类
+//这个工厂方法返回一个新的"范围对象"
+function range(from,to){//使用inherit()函数来创建对象，这个对象继承自在下面定义的原型对象
+	//原型对象作为函数的一个属性存储，并定义所有"范围对象"所共享的方法（行为）
+	var r = inherit(range.methods);//存储新的"范围对象"的起始位置和结束位置（状态）
+	//这两个属性是不可继承的，每个对象都拥有唯一的属性
+	r.from=from;
+	r.to=to;
+	return r;//返回这个新创建的对象
+}
+//原型对象定义方法，这些方法为每个范围对象所继承
+range.methods={//如果x在范围内，则返回true；否则返回false
+	//这个方法可以比较数字范围，也可以比较字符串和日期范围
+	includes:function(x){
+		return this.from<=x&&x<=this.to;//对于范围内的每个整数都调用一次f
+	},
+	//这个方法只可用做数字范围
+	foreach:function(f){
+		for(var x=Math.ceil(this.from);x＜=this.to;x++)f(x);
+	},//返回表示这个范围的字符串
+	toString:function(){return"("+this.from+"..."+this.to+")";}
+};
+var r=range(1,3);//创建一个范围对象
+r.includes(2);//=＞true:2在这个范围内
+r.foreach(console.log);//输出1 2 3
+console.log(r);//输出(1...3)
+
+//9-2 使用构造函数来定义“范围类”
+//range2.js:表示值的范围的类的另一种实现
+//这是一个构造函数，用以初始化新创建的"范围对象"
+//注意，这里并没有创建并返回一个对象，仅仅是初始化
+function Range(from,to){//存储"范围对象"的起始位置和结束位置（状态）
+	//这两个属性是不可继承的，每个对象都拥有唯一的属性
+	this.from=from;
+	this.to=to;
+}
+//所有的"范围对象"都继承自这个对象
+//注意，属性的名字必须是"prototype"
+Range.prototype={//如果x在范围内，则返回true；否则返回false
+	//这个方法可以比较数字范围，也可以比较字符串和日期范围
+	includes:function(x){return this.from＜=x＆＆x＜=this.to;},//对于范围内的每个整数都调用一次f
+	//这个方法只可用于数字范围
+	foreach:function(f){
+		for(var x=Math.ceil(this.from);x＜=this.to;x++)f(x);
+	},//返回表示这个范围的字符串
+	toString:function(){return"("+this.from+"..."+this.to+")";}
+};//这里是使用"范围对象"的一些例子
+var r=new Range(1,3);//创建一个范围对象
+r.includes(2);//=＞true:2在这个范围内
+r.foreach(console.log);//输出1 2 3
+console.log(r);//输出(1...3)
