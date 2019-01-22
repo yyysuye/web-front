@@ -1,0 +1,81 @@
+html{
+	height:100%;
+}
+body{
+	margin:0;
+	padding:0;
+	background-color: #b6a996;
+	background: url("hobart.jpg") no-repeat center center fixed;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	min-height: 100%;
+	font-family: helvetica, arial, sans-serif;
+    font-size: 100%;
+    text-align: center;
+    border-left:20px solid white;
+    border-right:20px solid white;
+}
+body:before,body:after{
+	content:"";
+	height:20px;
+	position: fixed;
+	background-color: #fff;
+	left:0;
+	right:0;
+}
+body:before{
+	top:0;
+}
+body:after{
+	bottom:0;
+}
+
+h1,h2{
+	text-indent: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+}
+h1{
+	width: 278px;
+    height: 112px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	margin-bottom: 20px;
+	padding-top: 40px;
+	background: url(elderflower-logo.png) no-repeat bottom center;
+}
+h2{
+	width: 286px;
+	height: 18px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0;
+	margin-bottom: 10px;
+	background: url(custom-sign.png) no-repeat center center;
+}
+#con{
+	background-color: #fff;
+	max-width: 580px;
+	max-height: 11em;
+	padding:30px 50px;
+	border:3px double #31373f;
+	margin-left: auto;
+	margin-right: auto;
+	color:#31373f;
+	text-align: center;
+}
+#cost{
+	float:right;
+	position: relative;
+	right:2em;
+	top:1em;
+	color:#fff;
+	background-color: #f84c53;
+	width: auto;
+	height: 1em;
+	padding:0.5em 0.75em;
+}
+
